@@ -12,6 +12,9 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.use("/api/services", require("./routes/services.route"));
+// app.use("/api/reviews", require("./routes/reviews.route"));
+
 app.use("*", (req, res, next) => {
   next(createHttpErrors(404, "Route not found"));
 });
