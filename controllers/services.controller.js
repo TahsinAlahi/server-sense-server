@@ -13,4 +13,39 @@ async function getHomeServices(req, res, next) {
   }
 }
 
-module.exports = { getHomeServices };
+async function addNewServices(req, res, next) {
+  try {
+    const {
+      serviceImage,
+      serviceTitle,
+      companyName,
+      website,
+      description,
+      category,
+      price,
+      addedDate,
+      userEmail,
+    } = req.body;
+
+    if (
+      !serviceImage ||
+      !serviceTitle ||
+      !companyName ||
+      !website ||
+      !description ||
+      !category ||
+      !price ||
+      !addedDate ||
+      !userEmail
+    )
+      throw createHttpErrors(400, "All fields are required");
+
+    const result = await servicesCollection.insertOne(req.body);
+
+    res.status(201).json({ ...req.body, _id: result.insertedId });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getHomeServices, addNewServices };
