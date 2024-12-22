@@ -13,6 +13,15 @@ async function getHomeServices(req, res, next) {
   }
 }
 
+async function getAllServices(req, res, next) {
+  try {
+    const services = await servicesCollection.find().toArray();
+    res.status(200).json(services);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function addNewServices(req, res, next) {
   try {
     const {
@@ -48,4 +57,4 @@ async function addNewServices(req, res, next) {
   }
 }
 
-module.exports = { getHomeServices, addNewServices };
+module.exports = { getHomeServices, addNewServices, getAllServices };
