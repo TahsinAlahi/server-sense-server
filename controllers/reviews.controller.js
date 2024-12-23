@@ -31,4 +31,16 @@ async function addNewReview(req, res, next) {
   }
 }
 
-module.exports = { addNewReview };
+async function getMyReviews(req, res, next) {
+  try {
+    const { email } = req.query;
+
+    const myReviews = await reviewCollection.find({ email }).toArray();
+
+    res.status(200).json(myReviews);
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { addNewReview, getMyReviews };
