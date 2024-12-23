@@ -63,4 +63,20 @@ async function updateReview(req, res, next) {
   }
 }
 
-module.exports = { addNewReview, getMyReviews, updateReview };
+async function deleteReview(req, res, next) {
+  const { id } = req.params;
+  try {
+    if (!id) throw createHttpErrors(400, "Id is required");
+    if (!ObjectId.isValid(id)) throw createHttpErrors(400, "Invalid id");
+    const deletedReview = await reviewCollection.findOneAndDelete({
+      _id: ObjectId.createFromHexString(id),
+    });
+
+    if (!deletedReview) throw createHttpErrors(404, "Review not found");
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { addNewReview, getMyReviews, updateReview, deleteReview };
