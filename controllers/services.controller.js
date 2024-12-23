@@ -82,6 +82,22 @@ async function updateService(req, res, next) {
   }
 }
 
+async function deleteService(req, res, next) {
+  const { id } = req.params;
+  try {
+    if (!id) throw createHttpErrors(400, "Id is required");
+    if (!ObjectId.isValid(id)) throw createHttpErrors(400, "Invalid id");
+    const deletedService = await servicesCollection.findOneAndDelete({
+      _id: ObjectId.createFromHexString(id),
+    });
+
+    if (!deletedService) throw createHttpErrors(404, "Service not found");
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function addNewServices(req, res, next) {
   try {
     const {
@@ -92,7 +108,6 @@ async function addNewServices(req, res, next) {
       description,
       category,
       price,
-      addedDate,
       userEmail,
     } = req.body;
 
@@ -104,14 +119,25 @@ async function addNewServices(req, res, next) {
       !description ||
       !category ||
       !price ||
-      !addedDate ||
       !userEmail
     )
       throw createHttpErrors(400, "All fields are required");
 
-    const result = await servicesCollection.insertOne(req.body);
+    const date = new Date();
+    const addedDate = `${date.getDate()}-${
+      date.getMonth() + 1
+    }-${date.getFullYear()}`;
 
-    res.status(201).json({ ...req.body, _id: result.insertedId });
+    const result = await servicesCollection.insertOne({
+      ...req.body,
+      addedDate,
+    });
+
+    res.status(201).json({
+      ...req.body,
+      _id: result.insertedId,
+      addedDate,
+    });
   } catch (error) {
     next(error);
   }
@@ -123,4 +149,5 @@ module.exports = {
   getAllServices,
   getServiceById,
   updateService,
+  deleteService,
 };
