@@ -37,6 +37,51 @@ async function getServiceById(req, res, next) {
   }
 }
 
+async function updateService(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    if (!id) throw createHttpErrors(400, "Id is required");
+    if (!ObjectId.isValid(id))
+      throw createHttpErrors(400, "Invalid service id");
+
+    const {
+      serviceImage,
+      serviceTitle,
+      companyName,
+      website,
+      description,
+      category,
+      price,
+      userEmail,
+    } = req.body;
+
+    const changedFields = {
+      ...(serviceImage && { serviceImage }),
+      ...(serviceTitle && { serviceTitle }),
+      ...(companyName && { companyName }),
+      ...(website && { website }),
+      ...(description && { description }),
+      ...(category && { category }),
+      ...(price && { price }),
+      ...(userEmail && { userEmail }),
+    };
+
+    const updatedService = await servicesCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: changedFields },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedService) throw createHttpErrors(404, "Service not found");
+    console.log(updatedService);
+
+    res.status(200).json(updatedService);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function addNewServices(req, res, next) {
   try {
     const {
@@ -77,4 +122,5 @@ module.exports = {
   addNewServices,
   getAllServices,
   getServiceById,
+  updateService,
 };
