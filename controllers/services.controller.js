@@ -22,6 +22,21 @@ async function getAllServices(req, res, next) {
   }
 }
 
+async function getServiceById(req, res, next) {
+  const { id } = req.params;
+  try {
+    if (!id) throw createHttpErrors(400, "Id is required");
+    if (!ObjectId.isValid(id)) throw createHttpErrors(400, "Invalid id");
+    const service = await servicesCollection.findOne({
+      _id: ObjectId.createFromHexString(id),
+    });
+    if (!service) throw createHttpErrors(404, "Service not found");
+    res.status(200).json(service);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function addNewServices(req, res, next) {
   try {
     const {
@@ -57,4 +72,9 @@ async function addNewServices(req, res, next) {
   }
 }
 
-module.exports = { getHomeServices, addNewServices, getAllServices };
+module.exports = {
+  getHomeServices,
+  addNewServices,
+  getAllServices,
+  getServiceById,
+};
