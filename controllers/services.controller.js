@@ -27,11 +27,38 @@ async function getServiceById(req, res, next) {
   try {
     if (!id) throw createHttpErrors(400, "Id is required");
     if (!ObjectId.isValid(id)) throw createHttpErrors(400, "Invalid id");
-    const service = await servicesCollection.findOne({
-      _id: ObjectId.createFromHexString(id),
-    });
-    if (!service) throw createHttpErrors(404, "Service not found");
-    res.status(200).json(service);
+    const service = await servicesCollection
+      .aggregate([
+        { $match: { _id: ObjectId.createFromHexString(id) } },
+        {
+          $lookup: {
+            from: "reviews",
+            localField: "_id",
+            foreignField: "serviceId",
+            as: "reviews",
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            serviceTitle: 1,
+            companyName: 1,
+            serviceImage: 1,
+            website: 1,
+            description: 1,
+            category: 1,
+            price: 1,
+            addedDate: 1,
+            userEmail: 1,
+            reviews: 1,
+          },
+        },
+      ])
+      .toArray();
+
+    if (!service || service.length === 0)
+      throw createHttpErrors(404, "Service not found");
+    res.status(200).json(service[0]);
   } catch (error) {
     next(error);
   }
