@@ -7,9 +7,9 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({ credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -23,7 +23,11 @@ app.post("/api/jwt", async (req, res, next) => {
       expiresIn: "3h",
     });
     res
-      .cookie("token", token, { httpOnly: true, secure: false })
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 3 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({ message: "Token issued successfully" });
   } catch (error) {
@@ -47,6 +51,7 @@ app.use((err, req, res, next) => {
     errorMessage = err.message;
   }
 
+  console.error(err);
   res.status(errorCode).json({ message: errorMessage });
 });
 
