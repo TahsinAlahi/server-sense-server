@@ -15,25 +15,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.post("/api/jwt", async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    if (!email) throw createHttpErrors(400, "Email is required");
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "3h",
-    });
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 3 * 60 * 60 * 1000,
-      })
-      .status(200)
-      .json({ message: "Token issued successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
+app.use("/api/jwt", require("./routes/jwt.route"));
 
 app.use("/api/services", require("./routes/services.route"));
 app.use("/api/reviews", require("./routes/reviews.route"));
