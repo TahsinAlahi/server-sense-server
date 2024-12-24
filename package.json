@@ -17,7 +17,8 @@
     "express": "^4.21.1",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.11.0"
+    "mongodb": "^6.11.0",
+    "vercel": "^39.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
