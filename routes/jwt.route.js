@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const createHttpErrors = require("http-errors");
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -34,3 +35,5 @@ router.post("/logout", async (req, res, next) => {
     next(error);
   }
 });
+
+module.exports = router;
