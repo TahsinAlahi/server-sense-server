@@ -4,10 +4,10 @@ const createHttpErrors = require("http-errors");
 
 async function addNewReview(req, res, next) {
   try {
-    const { review, rating, serviceId } = req.body;
+    const { review, rating, serviceId, name, image } = req.body;
     const { email } = req.query;
 
-    if (!email || !review || !rating || !serviceId)
+    if (!email || !review || !rating || !serviceId || !name || !image)
       throw createHttpErrors(400, "All fields are required");
 
     const date = new Date();
@@ -21,6 +21,8 @@ async function addNewReview(req, res, next) {
       serviceId: new ObjectId(serviceId),
       email,
       addedDate,
+      name,
+      image,
     };
 
     const result = await reviewCollection.insertOne(newReview);
