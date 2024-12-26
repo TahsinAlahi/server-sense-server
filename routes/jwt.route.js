@@ -12,7 +12,8 @@ router.post("/login", async (req, res, next) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
         maxAge: 3 * 60 * 60 * 1000,
       })
       .status(200)
@@ -27,7 +28,8 @@ router.post("/logout", async (req, res, next) => {
     res
       .clearCookie("token", {
         httpOnly: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
       })
       .status(200)
       .json({ message: "Token deleted successfully" });
