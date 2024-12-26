@@ -170,6 +170,16 @@ async function addNewServices(req, res, next) {
   }
 }
 
+async function getMyServices(req, res, next) {
+  try {
+    const { userEmail } = req.query;
+    const myServices = await servicesCollection.find({ userEmail }).toArray();
+    res.status(200).json(myServices);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getHomeServices,
   addNewServices,
@@ -177,4 +187,5 @@ module.exports = {
   getServiceById,
   updateService,
   deleteService,
+  getMyServices,
 };
