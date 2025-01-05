@@ -13,7 +13,7 @@ app.use(
       "http://127.0.0.1:5173",
       "http://127.0.0.1:3000",
       "https://b10a11-server-side-tahsin-alahi.vercel.app",
-      "https://servce-sense.netlify.app",
+      "https://serve-sense.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
