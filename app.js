@@ -7,20 +7,23 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
+app.use(express.json());
+app.use(cookieParser());
+
 app.use(
   cors({
     origin: [
+      "http://localhost:5173",
       "http://127.0.0.1:5173",
       "http://127.0.0.1:3000",
       "https://b10a11-server-side-tahsin-alahi.vercel.app",
       "https://serve-sense.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: "*",
     credentials: true,
   })
 );
-app.use(express.json());
-app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
